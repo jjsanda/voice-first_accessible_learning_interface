@@ -1,0 +1,62 @@
+{
+  "name": "voice-first-accessible-learning-interface",
+  "private": true,
+  "version": "0.1.0",
+  "description": "A hands-free, voice-driven, screen-reader-friendly way to study course content: ask questions aloud, review flashcards, and have lessons read to you.",
+  "type": "module",
+  "author": "Josef Sanda (https://github.com/jjsanda)",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jjsanda/voice-first_accessible_learning_interface.git"
+  },
+  "homepage": "https://jjsanda.github.io/voice-first_accessible_learning_interface/",
+  "keywords": [
+    "accessibility",
+    "voice-interface",
+    "web-speech-api",
+    "education",
+    "flashcards",
+    "spaced-repetition",
+    "screen-reader",
+    "wcag"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.112.1",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.3",
+    "@vitest/coverage-v8": "^4.1.10",
+    "eslint": "^9.39.5",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.7.0",
+    "jsdom": "^29.1.1",
+    "prettier": "^3.9.5",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.64.0",
+    "vite": "^8.1.5",
+    "vitest": "^4.1.10"
+  }
+}

@@ -1,0 +1,384 @@
+{
+  "id": "cs-fundamentals",
+  "title": "CS Fundamentals: Algorithms & Data Structures",
+  "description": "An introductory course on core computer science ideas, covering algorithm analysis with Big-O notation, fundamental data structures, sorting, and searching in trees and graphs.",
+  "language": "en",
+  "version": "1.0.0",
+  "lessons": [
+    {
+      "id": "big-o",
+      "title": "Big-O Notation and Complexity",
+      "order": 1,
+      "summary": "This lesson explains how computer scientists measure the efficiency of algorithms using Big-O notation and complexity classes.",
+      "sections": [
+        {
+          "id": "what-is-big-o",
+          "title": "What Big-O Notation Means",
+          "content": "When we compare algorithms, we rarely care about the exact number of milliseconds a program takes on one particular computer. Instead, we ask how the running time or memory usage grows as the input gets larger. Big-O notation is the standard mathematical language for describing this growth rate, and it lets us talk about efficiency in a way that is independent of hardware, programming language, or compiler.\n\nFormally, Big-O describes an upper bound on how fast a function grows. If we say an algorithm runs in O(n) time, pronounced order n, we mean that as the input size n grows, the running time grows at most proportionally to n. Doubling the input roughly doubles the work. This is often called linear time, because the cost scales in a straight line with the size of the input.\n\nA key idea is that Big-O ignores constant factors and lower order terms. An algorithm that performs 3n plus 10 operations and one that performs n operations are both O(n), because for large inputs the leading term dominates. This simplification is deliberate, since it focuses our attention on scalability, meaning how the algorithm behaves when the data becomes very large."
+        },
+        {
+          "id": "common-complexity-classes",
+          "title": "Common Complexity Classes",
+          "content": "A handful of complexity classes cover most algorithms you will meet in practice. The fastest is O(1), called constant time, where the cost does not depend on the input size at all, such as reading one element of an array by its index. Next comes O(log n), logarithmic time, where the work grows very slowly because each step cuts the problem size in half, as in binary search.\n\nLinear time, written O(n), means the algorithm touches each input element a constant number of times, like scanning a list to find its maximum. Slightly slower is O(n log n), often called linearithmic time, which is the running time of efficient comparison-based sorting algorithms such as merge sort. It grows a little faster than linear but far slower than quadratic.\n\nQuadratic time, O(n squared), typically appears when an algorithm compares every pair of elements using nested loops, as in bubble sort or insertion sort on large inputs. Beyond that lie exponential time algorithms, O(2 to the n), whose cost doubles with every extra input element and which quickly become impractical. Knowing these classes helps you predict performance: a quadratic algorithm may be fine for a hundred items but painfully slow for a million."
+        },
+        {
+          "id": "best-average-worst-case",
+          "title": "Best, Average, and Worst Case",
+          "content": "The same algorithm can behave very differently depending on the particular input it receives, not just its size. For this reason we distinguish best case, average case, and worst case analysis. The best case describes the most favorable input, the worst case describes the least favorable input, and the average case describes the expected performance over typical or random inputs.\n\nA classic example is searching a list from front to back, known as linear search. In the best case the item is the very first element and we finish in O(1), constant time. In the worst case the item is last or missing entirely, and we examine all n elements, giving O(n), linear time. On average, if the item is equally likely to be anywhere, we inspect about half the list, which is still O(n) because constant factors are dropped.\n\nIn practice, engineers usually care most about the worst case, because it gives a guarantee that holds no matter what input arrives. However, the average case sometimes tells the more useful story. Quicksort, for instance, has a quadratic worst case of O(n squared) but an excellent average case of O(n log n), and that average behavior is why it is so popular in real systems."
+        },
+        {
+          "id": "analyzing-simple-code",
+          "title": "Analyzing Simple Code",
+          "content": "You can estimate the time complexity of most simple programs by looking at their loop structure. A single loop that runs once per input element is linear, O(n). Two nested loops that each run n times give quadratic time, O(n squared), because the inner body executes about n times n operations. A loop that repeatedly halves the remaining problem, such as the loop inside binary search, runs O(log n) times, meaning the number of iterations grows logarithmically.\n\nWhen an algorithm has several phases, the slowest phase dominates the total cost. If a program first sorts data in O(n log n) time and then scans it once in O(n) time, the overall complexity is O(n log n), since the sorting step outweighs the scan for large inputs. Adding complexities keeps only the largest term.\n\nBig-O applies to memory as well as time, and this is called space complexity. An algorithm that only uses a few extra variables has O(1) auxiliary space, while one that copies its whole input needs O(n) extra space. Time and space often trade off against each other, and choosing the right balance is a core skill in algorithm design."
+        }
+      ]
+    },
+    {
+      "id": "arrays-linked-lists",
+      "title": "Arrays and Linked Lists",
+      "order": 2,
+      "summary": "This lesson compares arrays and linked lists, two fundamental ways of storing sequences, and explains how dynamic arrays grow.",
+      "sections": [
+        {
+          "id": "arrays-basics",
+          "title": "Arrays and Contiguous Memory",
+          "content": "An array stores its elements in one contiguous block of memory, side by side. Because every element has the same size, the computer can calculate the exact memory address of any element from its index with simple arithmetic. This is why reading or writing an element by index, called random access, takes O(1) time, meaning constant time regardless of how large the array is.\n\nThis contiguous layout also makes arrays extremely cache friendly. Modern processors load memory in chunks, so when you access one array element, its neighbors are usually pulled into the fast cache as well. Iterating over an array is therefore very fast in practice, often noticeably faster than traversing structures whose nodes are scattered around memory.\n\nThe main limitation of a plain array is that its size is fixed when it is created. Inserting a new element in the middle requires shifting every later element one position over, which costs O(n) time in the worst case. Deleting from the middle has the same linear cost, because the gap must be closed by shifting elements back."
+        },
+        {
+          "id": "linked-lists-basics",
+          "title": "Linked Lists and Nodes",
+          "content": "A linked list takes the opposite approach to memory layout. Each element lives in its own small object called a node, and each node stores the data plus a pointer, or reference, to the next node in the sequence. The nodes can be scattered anywhere in memory, and the list is held together only by these links, starting from a special reference called the head.\n\nIn a singly linked list each node points only to its successor, while in a doubly linked list each node also points back to its predecessor, which makes it easy to walk the list in both directions and to remove a node when you already hold a reference to it. The trade-off is that every node in a doubly linked list needs extra memory for the second pointer.\n\nThe great strength of linked lists is cheap insertion and deletion at a known position. If you already have a reference to a node, you can splice a new node in after it, or unlink it, in O(1) constant time by just rewiring a couple of pointers. No elements ever need to be shifted, which is exactly the operation that makes arrays slow to modify in the middle."
+        },
+        {
+          "id": "arrays-vs-linked-lists-tradeoffs",
+          "title": "Trade-offs Between Arrays and Linked Lists",
+          "content": "Choosing between an array and a linked list is a classic trade-off between fast access and fast modification. Arrays give O(1) random access by index but O(n) insertion or deletion in the middle. Linked lists give O(1) insertion and deletion at a known node, but finding the element at position i requires walking the chain from the head, which takes O(n) linear time because there is no address arithmetic to jump directly to it.\n\nMemory behavior also differs. Arrays store only the data itself in one compact block, while linked lists pay overhead for one or two pointers per node and lose the cache friendliness of contiguous storage. For this reason, iterating through a linked list is usually slower in practice than iterating through an array of the same length, even though both traversals are O(n) on paper.\n\nAs a rule of thumb, prefer arrays when you mostly read elements by position or iterate over the whole collection, and consider linked lists when you frequently insert and remove elements at the ends or at positions you already hold references to. Many standard library structures, such as queues and adjacency lists for graphs, are built on one of these two foundations."
+        },
+        {
+          "id": "dynamic-arrays",
+          "title": "Dynamic Arrays and Amortized Growth",
+          "content": "Most programming languages offer a dynamic array, also called a resizable array, an array list, or a vector. Examples include Python lists, Java's ArrayList, and C++'s vector. A dynamic array wraps a plain fixed-size array and keeps track of how many slots are actually used, so from the programmer's point of view it simply grows as you append elements.\n\nThe trick is in how it grows. When the underlying array becomes full, the dynamic array allocates a new array that is larger, typically about twice the old capacity, copies all existing elements over, and then continues appending. That copying step costs O(n) time, but it happens rarely, and the doubling strategy spreads its cost across many cheap appends.\n\nThis leads to the idea of amortized analysis. Although a single append can occasionally be expensive, the average cost per append over any long sequence of operations is O(1), so we say appending to a dynamic array takes amortized constant time. Dynamic arrays therefore combine the fast indexed access of arrays with the convenience of a collection that grows on demand, which is why they are the default sequence type in most languages."
+        }
+      ]
+    },
+    {
+      "id": "stacks-queues",
+      "title": "Stacks and Queues",
+      "order": 3,
+      "summary": "This lesson introduces stacks and queues, explains the LIFO and FIFO orderings, and shows where each structure is used in real software.",
+      "sections": [
+        {
+          "id": "stacks-lifo",
+          "title": "Stacks and LIFO Order",
+          "content": "A stack is a collection where elements are added and removed only at one end, called the top. Adding an element is called push, removing the most recently added element is called pop, and looking at the top without removing it is called peek. Because the last element pushed is always the first one popped, a stack follows last in, first out order, abbreviated LIFO.\n\nA helpful mental picture is a stack of plates in a cafeteria. You place a clean plate on top of the pile, and when someone takes a plate they take the one on top, which is the most recently added. You never pull a plate from the middle or the bottom of the pile.\n\nAll core stack operations, push, pop, and peek, run in O(1) constant time, since they only touch the top of the structure. Stacks are commonly implemented with a dynamic array, pushing and popping at the array's end, or with a linked list, pushing and popping at the head. Both implementations keep every operation constant time."
+        },
+        {
+          "id": "queues-fifo",
+          "title": "Queues and FIFO Order",
+          "content": "A queue is the mirror image of a stack. Elements are added at one end, called the back or tail, using an operation called enqueue, and removed from the other end, called the front or head, using an operation called dequeue. The first element added is the first one removed, so a queue follows first in, first out order, abbreviated FIFO.\n\nThe everyday analogy is a line of people waiting at a ticket counter. New arrivals join at the back of the line, and the person who has waited longest, standing at the front, is served first. This fairness property, serving items in arrival order, is exactly what makes queues so useful in computing.\n\nLike stacks, queues support their main operations, enqueue and dequeue, in O(1) constant time when implemented well. A linked list with references to both head and tail works naturally, and a circular buffer built on an array is a popular alternative because it reuses slots as the front advances. A related structure, the double-ended queue or deque, allows insertion and removal at both ends and can act as either a stack or a queue."
+        },
+        {
+          "id": "stacks-queues-real-world-uses",
+          "title": "Real-World Uses of Stacks and Queues",
+          "content": "Stacks appear anywhere a program must remember where to return to. The most important example is the call stack, which every running program uses to track function calls: when a function is called, a frame with its local variables is pushed, and when it returns, that frame is popped. The undo feature in an editor is another natural stack, since undo reverses the most recent action first, and the back button in a web browser works the same way. Stacks also power algorithms for matching parentheses, evaluating expressions, and depth-first search.\n\nQueues appear wherever tasks must be processed in the order they arrive. Printers keep a print queue of documents, operating systems keep queues of processes waiting for the CPU, and web servers queue incoming requests when they arrive faster than they can be handled. Message queues connect separate services in large systems, smoothing out bursts of traffic by buffering work.\n\nThe two orderings also drive two fundamental search strategies, which we will meet again in the lesson on graphs. Depth-first search explores by following one path as deep as possible before backtracking, and it is naturally described with a stack. Breadth-first search explores level by level, visiting nearby items before distant ones, and it relies on a queue. Choosing LIFO or FIFO order literally changes the shape of the exploration."
+        }
+      ]
+    },
+    {
+      "id": "hash-tables",
+      "title": "Hash Tables",
+      "order": 4,
+      "summary": "This lesson explains how hash tables map keys to values using hash functions, how collisions are resolved, and why the load factor matters.",
+      "sections": [
+        {
+          "id": "hash-functions-and-buckets",
+          "title": "Hash Functions and Buckets",
+          "content": "A hash table, also called a hash map or dictionary, stores key and value pairs and lets you look up the value for a key extremely quickly. The core idea is to keep an internal array of slots, often called buckets, and to use a hash function to convert each key into an array index. To store or find a key, the table hashes the key, jumps directly to the computed bucket, and works there, avoiding any search through the rest of the data.\n\nA hash function takes a key, such as a string or a number, and produces an integer called the hash code, which is then reduced to a valid index, commonly by taking the remainder after dividing by the array length. A good hash function is fast to compute, always gives the same output for the same key, and spreads different keys as evenly as possible across the buckets. Even distribution is crucial, because it keeps every bucket short and lookups quick.\n\nThanks to this design, insertion, lookup, and deletion in a hash table take O(1) time on average, meaning constant expected time no matter how many entries are stored. This average-case constant time performance is why hash tables sit behind dictionaries in Python, objects and Maps in JavaScript, and HashMap in Java, and why they are the default choice for fast key-based lookup."
+        },
+        {
+          "id": "collisions-chaining-open-addressing",
+          "title": "Collisions, Chaining, and Open Addressing",
+          "content": "Because there are far more possible keys than buckets, two different keys will sometimes hash to the same index. This event is called a collision, and it is unavoidable, so every hash table needs a collision resolution strategy. The two classic strategies are separate chaining and open addressing.\n\nWith separate chaining, each bucket holds a small collection of entries, traditionally a linked list, rather than a single entry. Colliding keys simply join the same bucket's chain, and a lookup hashes to the bucket and then scans that short chain comparing keys. As long as the chains stay short, operations remain fast, and in the worst case where every key lands in one bucket, performance degrades to O(n) linear time.\n\nWith open addressing, all entries live directly in the bucket array itself, and a collision is resolved by probing, meaning searching for another free slot according to a fixed rule. The simplest rule, linear probing, just tries the next slot, then the next, wrapping around the array until an empty slot is found. Open addressing avoids the pointer overhead of chains and is very cache friendly, but it is more sensitive to the table filling up, and deletions require special care, often using marker values called tombstones."
+        },
+        {
+          "id": "load-factor-and-resizing",
+          "title": "Load Factor and Resizing",
+          "content": "The load factor of a hash table is the number of stored entries divided by the number of buckets. It measures how full the table is, and it directly controls performance. A low load factor means mostly empty buckets and fast operations, while a high load factor means frequent collisions, longer chains or probe sequences, and slower lookups.\n\nTo keep operations near constant time, hash tables resize themselves when the load factor crosses a threshold, commonly around 0.75 for chained tables and lower for open addressing. Resizing allocates a larger bucket array, usually about double the size, and rehashes every existing entry into its new position, because the index of each key depends on the array length. A single resize costs O(n) time, but just like growing a dynamic array, this cost is amortized across many cheap insertions, so inserts remain O(1) on average.\n\nIt is worth remembering the difference between average and worst case here. With a good hash function and a sensible load factor, hash table operations are O(1) expected time, but with a terrible hash function or adversarial keys, everything can collide and operations degrade to O(n). Keys used in a hash table should also be immutable, or at least never change while stored, since changing a key would change its hash and make the entry impossible to find."
+        },
+        {
+          "id": "when-to-use-hash-tables",
+          "title": "When to Use a Hash Table",
+          "content": "Hash tables shine whenever you need to answer the question, have I seen this key before, or what value is associated with this key. Counting word frequencies in a document, caching the results of expensive computations, indexing users by their username, and detecting duplicates in a stream of data are all natural hash table jobs. A hash set, which stores only keys with no values, supports fast membership tests in O(1) average time.\n\nHash tables do have limitations. They keep entries in no meaningful order, so if you need to iterate over keys in sorted order or find the smallest key greater than some value, a sorted structure such as a balanced binary search tree is a better fit, offering O(log n) logarithmic time for those ordered operations. Hash tables also spend some memory on empty buckets and bookkeeping in exchange for their speed.\n\nA good habit is to reach for a hash table by default for lookup-heavy problems, and switch to an ordered structure only when the problem genuinely requires ordering or range queries. This single decision, choosing the right dictionary structure, resolves a surprising share of practical performance problems."
+        }
+      ]
+    },
+    {
+      "id": "sorting",
+      "title": "Sorting Algorithms",
+      "order": 5,
+      "summary": "This lesson walks through bubble sort, insertion sort, merge sort, and quicksort, comparing their speed, stability, and best uses.",
+      "sections": [
+        {
+          "id": "simple-sorts-bubble-insertion",
+          "title": "Simple Sorts: Bubble Sort and Insertion Sort",
+          "content": "Bubble sort is usually the first sorting algorithm students meet because it is so easy to describe. It repeatedly sweeps through the list, comparing adjacent pairs of elements and swapping them when they are out of order, so that after each pass the largest remaining element bubbles up to its final position at the end. The algorithm keeps making passes until a full sweep completes with no swaps, which means the list is sorted.\n\nBubble sort's running time is O(n squared) in the average and worst case, quadratic time, because it may compare every pair of elements. Its best case is O(n), linear time, when the input is already sorted and a single pass confirms it. In practice bubble sort is almost never the right choice, but it is a valuable teaching tool for reasoning about comparisons and swaps.\n\nInsertion sort is a smarter simple sort that works the way many people sort playing cards in their hand. It grows a sorted region at the front of the list, and for each new element it shifts larger sorted elements to the right until the new element can be inserted into its correct place. Insertion sort is also O(n squared) in the worst case, but it runs in O(n) time on nearly sorted data, it is stable, and it is genuinely fast for small inputs, which is why production sorting libraries often switch to insertion sort for tiny subarrays."
+        },
+        {
+          "id": "merge-sort",
+          "title": "Merge Sort and Divide and Conquer",
+          "content": "Merge sort is the classic example of the divide and conquer strategy. It splits the list into two halves, recursively sorts each half, and then merges the two sorted halves into one sorted whole. The merge step walks along both halves at once, repeatedly taking the smaller front element, which is quick and simple because both halves are already in order.\n\nThe performance of merge sort is its headline feature. It runs in O(n log n) time, linearithmic time, in the best case, the average case, and the worst case alike, because the list is always halved about log n times and each level of merging touches all n elements. This guaranteed running time makes merge sort completely predictable, with no bad inputs that can degrade it.\n\nMerge sort is also stable, meaning that elements which compare as equal keep their original relative order, a property that matters when sorting records by one field after another. Its main cost is memory, since the standard implementation needs O(n) extra space for the temporary arrays used during merging. Merge sort is a great choice when stability or worst-case guarantees matter, and its sequential access pattern makes it the traditional method for sorting data too large to fit in memory, as well as the basis of the sorts built into many language libraries."
+        },
+        {
+          "id": "quicksort",
+          "title": "Quicksort and Partitioning",
+          "content": "Quicksort is another divide and conquer algorithm, but it does its work before recursing rather than after. It picks one element called the pivot, then partitions the list so that everything smaller than the pivot ends up on its left and everything larger ends up on its right. The pivot is then in its final sorted position, and quicksort recursively sorts the left and right parts.\n\nQuicksort is famous for its speed in practice. Its average time complexity is O(n log n), and its constant factors are small because partitioning works in place with tight loops that use the processor cache extremely well, so its real-world performance and running time are usually excellent. The catch is the worst case: if the chosen pivots are repeatedly the smallest or largest elements, for example when a naive implementation picks the first element of an already sorted list, the partitions become maximally unbalanced and the running time degrades to O(n squared), quadratic time.\n\nGood implementations make that slow worst case extremely unlikely by choosing pivots randomly or by taking the median of a few sampled elements. Unlike merge sort, quicksort sorts in place using only O(log n) extra space for recursion, but the common fast versions are not stable, so equal elements may be reordered. When you need raw speed on in-memory data and stability does not matter, quicksort is typically the fastest comparison sort available."
+        },
+        {
+          "id": "stability-and-choosing-a-sort",
+          "title": "Stability and Choosing the Right Sort",
+          "content": "A sorting algorithm is called stable if elements with equal keys keep their original relative order in the output. Stability matters whenever records are sorted by more than one criterion. For example, if you sort a list of students by name and then stably sort it by grade, students with the same grade remain alphabetically ordered, so you get grouping by grade with names in order inside each group for free. Merge sort, insertion sort, and bubble sort are stable, while typical in-place quicksort and selection sort are not.\n\nChoosing a sorting algorithm is a matter of matching properties to the situation. For small arrays or nearly sorted data, insertion sort is simple and quick. For guaranteed O(n log n) worst-case time and stability, choose merge sort, accepting its O(n) extra memory. For the best average speed on random in-memory data where stability is not required, quicksort is the usual winner. It also helps to know that O(n log n) is a proven lower bound for any sort that works by comparing elements, so no comparison sort can beat it in the general case.\n\nIn everyday programming you will normally call your language's built-in sort rather than writing your own. Those library routines are hybrids, such as Timsort in Python and Java, which combines merge sort and insertion sort and is stable, or introsort in C++, which starts as quicksort and switches strategies to guarantee O(n log n). Understanding the underlying algorithms tells you what performance and stability you can rely on from these tools."
+        }
+      ]
+    },
+    {
+      "id": "trees-graphs",
+      "title": "Trees, Graphs and Searching",
+      "order": 6,
+      "summary": "This lesson covers binary search, binary search trees and their traversals, and graphs explored with breadth-first and depth-first search.",
+      "sections": [
+        {
+          "id": "binary-search",
+          "title": "Binary Search on Sorted Data",
+          "content": "Binary search is a fast algorithm for finding a value in a sorted array. It compares the target with the middle element, and because the data is ordered, one comparison tells it which half of the array could contain the target. It then repeats the same step on that half, cutting the search space in half again and again until the value is found or the range becomes empty.\n\nThis repeated halving gives binary search a time complexity of O(log n), logarithmic time, meaning the number of steps grows very slowly as the data grows. Searching a million sorted elements takes only about twenty comparisons, while a plain linear search might need up to a million. That enormous gap between logarithmic and linear running time is one of the clearest demonstrations of why algorithm choice matters.\n\nThe essential prerequisite of binary search is that the data must already be sorted; on unsorted data its halving logic gives wrong answers, and only a linear scan is safe. This creates a practical trade-off: sorting costs O(n log n) up front, so it pays off when you will search the same data many times. The same halving idea generalizes beyond arrays, appearing in binary search trees and in techniques like bisecting a range of versions to find where a bug was introduced."
+        },
+        {
+          "id": "binary-trees-and-bsts",
+          "title": "Binary Trees and Binary Search Trees",
+          "content": "A tree is a hierarchical data structure made of nodes connected by edges, with a single node called the root at the top and no cycles. Each node may have child nodes, and a node with no children is called a leaf. Trees model naturally hierarchical data such as file systems, organization charts, and the structure of an HTML page. A binary tree is simply a tree in which every node has at most two children, referred to as the left child and the right child.\n\nA binary search tree, or BST, adds an ordering rule to the binary tree: for every node, all keys in its left subtree are smaller than the node's key, and all keys in its right subtree are larger. This invariant means that searching works just like binary search, comparing the target with the current node and descending left or right, discarding half of the remaining tree at each step in a balanced tree. Insertion and deletion follow the same guided path, so a BST keeps its data ordered while still supporting fast changes.\n\nThe performance of a BST depends on its height. In a balanced tree the height is about log n, so search, insert, and delete all run in O(log n) logarithmic time. But if keys are inserted in sorted order into a naive BST, the tree degenerates into a long chain resembling a linked list, and operations slow to O(n) linear time. Self-balancing trees such as AVL trees and red-black trees perform small local rotations during updates to keep the height logarithmic, guaranteeing O(log n) performance in the worst case."
+        },
+        {
+          "id": "tree-traversals",
+          "title": "Tree Traversals",
+          "content": "Traversing a tree means visiting every node exactly once, and the order of visits defines the traversal. The three classic depth-first traversals of a binary tree are preorder, inorder, and postorder, and they differ in when the current node is visited relative to its children. Preorder visits the node first, then its left subtree, then its right subtree. Inorder visits the left subtree, then the node, then the right subtree, and postorder visits both subtrees before the node itself.\n\nEach order has a signature use. An inorder traversal of a binary search tree visits the keys in ascending sorted order, which is a handy way to read out a BST's contents from smallest to largest. Preorder is useful for copying or serializing a tree, because it records each node before its descendants. Postorder is right for safely deleting a tree or computing values that depend on children first, such as the size of each subtree or the result of an expression tree.\n\nThere is also level-order traversal, which visits nodes level by level from the root downward, visiting all nodes at one depth before moving deeper. Level-order traversal is implemented with a queue and is really breadth-first search applied to a tree, while the depth-first traversals are naturally expressed with recursion or an explicit stack. All of these traversals visit each node once, so they run in O(n) linear time."
+        },
+        {
+          "id": "graphs-bfs-dfs",
+          "title": "Graphs, BFS, and DFS",
+          "content": "A graph is the most general structure for representing relationships. It consists of vertices, also called nodes, connected by edges. In an undirected graph edges work both ways, like friendships in a social network, while in a directed graph each edge points one way, like a follower relationship or a one-way street. Edges can also carry weights, such as distances or costs, and a tree is really just a special connected graph with no cycles. Graphs are commonly stored either as an adjacency list, which records each vertex's neighbors and is compact for sparse graphs, or as an adjacency matrix, which allows O(1) edge lookups but uses O(n squared) memory.\n\nBreadth-first search, or BFS, explores a graph outward from a starting vertex in waves, visiting all vertices one edge away, then two edges away, and so on. It uses a queue to hold the frontier of discovered vertices and a visited set to avoid processing any vertex twice. Because it expands level by level, BFS finds the shortest path, measured in number of edges, from the start to every reachable vertex in an unweighted graph, which makes it ideal for problems like the fewest hops in a network or the fewest moves in a puzzle.\n\nDepth-first search, or DFS, instead plunges down one path as far as possible before backtracking to try alternatives, using a stack or, most often, recursion. DFS is the natural tool for detecting cycles, for topological sorting of dependencies, for finding connected components, and for maze-like exploration where any path to the goal will do. Both BFS and DFS visit every vertex and edge once, so each runs in O(V plus E) time, linear in the size of the graph, and the practical choice between them comes down to whether you need shortest paths and level structure, favoring BFS, or deep structural information, favoring DFS."
+        }
+      ]
+    }
+  ],
+  "flashcards": [
+    {
+      "id": "fc-big-o-definition",
+      "lessonId": "big-o",
+      "front": "What does Big-O notation describe?",
+      "back": "Big-O describes an upper bound on how an algorithm's running time or memory grows as the input size grows, ignoring constant factors and lower order terms.",
+      "tags": ["big-o", "complexity"]
+    },
+    {
+      "id": "fc-constant-vs-linear",
+      "lessonId": "big-o",
+      "front": "What is the difference between O(1) and O(n) time?",
+      "back": "O(1) is constant time, where the cost stays the same regardless of input size, while O(n) is linear time, where the cost grows proportionally with the input.",
+      "tags": ["big-o", "complexity-classes"]
+    },
+    {
+      "id": "fc-n-log-n-examples",
+      "lessonId": "big-o",
+      "front": "Which well-known algorithms run in O(n log n) time?",
+      "back": "Efficient comparison-based sorting algorithms such as merge sort run in O(n log n), and quicksort achieves it on average.",
+      "tags": ["big-o", "sorting"]
+    },
+    {
+      "id": "fc-best-worst-case",
+      "lessonId": "big-o",
+      "front": "Why do we distinguish best case, average case, and worst case analysis?",
+      "back": "Because the same algorithm can behave differently on different inputs of the same size; the worst case gives a guarantee, while the average case describes typical performance.",
+      "tags": ["big-o", "analysis"]
+    },
+    {
+      "id": "fc-nested-loops",
+      "lessonId": "big-o",
+      "front": "What time complexity do two nested loops over the input typically produce?",
+      "back": "Two nested loops that each run n times typically produce O(n squared), quadratic time, because the inner body executes about n times n operations.",
+      "tags": ["big-o", "analysis"]
+    },
+    {
+      "id": "fc-array-random-access",
+      "lessonId": "arrays-linked-lists",
+      "front": "Why can an array access any element by index in constant time?",
+      "back": "Because array elements sit in one contiguous block of memory, the address of any element can be computed directly from its index with simple arithmetic, giving O(1) access.",
+      "tags": ["arrays", "memory"]
+    },
+    {
+      "id": "fc-array-middle-insert",
+      "lessonId": "arrays-linked-lists",
+      "front": "How expensive is inserting an element into the middle of an array, and why?",
+      "back": "It costs O(n) linear time in the worst case, because every element after the insertion point must be shifted one position over.",
+      "tags": ["arrays", "insertion"]
+    },
+    {
+      "id": "fc-linked-list-strength",
+      "lessonId": "arrays-linked-lists",
+      "front": "What is the main advantage of a linked list over an array?",
+      "back": "Insertion and deletion at a node you already have a reference to take O(1) constant time, since only a couple of pointers are rewired and no elements are shifted.",
+      "tags": ["linked-lists", "insertion"]
+    },
+    {
+      "id": "fc-linked-list-weakness",
+      "lessonId": "arrays-linked-lists",
+      "front": "Why is accessing the element at position i slow in a linked list?",
+      "back": "There is no address arithmetic to jump to a position, so you must walk the chain of nodes from the head, which takes O(n) linear time.",
+      "tags": ["linked-lists", "access"]
+    },
+    {
+      "id": "fc-dynamic-array-growth",
+      "lessonId": "arrays-linked-lists",
+      "front": "How does a dynamic array grow, and what is the cost of appending to it?",
+      "back": "When full, it allocates a new array about twice as large and copies everything over; that rare O(n) copy is spread out so appends cost amortized O(1) time.",
+      "tags": ["dynamic-arrays", "amortized"]
+    },
+    {
+      "id": "fc-lifo",
+      "lessonId": "stacks-queues",
+      "front": "What does LIFO stand for, and which data structure uses it?",
+      "back": "LIFO stands for last in, first out, and it is the ordering used by a stack, where the most recently pushed element is the first one popped.",
+      "tags": ["stacks", "lifo"]
+    },
+    {
+      "id": "fc-fifo",
+      "lessonId": "stacks-queues",
+      "front": "What does FIFO stand for, and which data structure uses it?",
+      "back": "FIFO stands for first in, first out, and it is the ordering used by a queue, where the element that has waited longest is removed first.",
+      "tags": ["queues", "fifo"]
+    },
+    {
+      "id": "fc-stack-operations",
+      "lessonId": "stacks-queues",
+      "front": "What are the main operations of a stack and how fast are they?",
+      "back": "Push adds an element to the top, pop removes the top element, and peek looks at it without removing; all three run in O(1) constant time.",
+      "tags": ["stacks", "operations"]
+    },
+    {
+      "id": "fc-stack-uses",
+      "lessonId": "stacks-queues",
+      "front": "Give some real-world uses of a stack in software.",
+      "back": "The call stack tracks function calls, undo features reverse the most recent action first, browser back buttons revisit recent pages, and depth-first search uses a stack.",
+      "tags": ["stacks", "applications"]
+    },
+    {
+      "id": "fc-queue-uses",
+      "lessonId": "stacks-queues",
+      "front": "Where are queues used in real computer systems?",
+      "back": "Printers use print queues, operating systems queue processes for the CPU, servers queue incoming requests, and breadth-first search relies on a queue.",
+      "tags": ["queues", "applications"]
+    },
+    {
+      "id": "fc-hash-function",
+      "lessonId": "hash-tables",
+      "front": "What does a hash function do in a hash table?",
+      "back": "It converts a key into an integer that is reduced to a bucket index, ideally spreading different keys evenly across the buckets so lookups stay fast.",
+      "tags": ["hash-tables", "hash-functions"]
+    },
+    {
+      "id": "fc-collision",
+      "lessonId": "hash-tables",
+      "front": "What is a collision in a hash table?",
+      "back": "A collision happens when two different keys hash to the same bucket index, and every hash table needs a strategy such as chaining or open addressing to resolve it.",
+      "tags": ["hash-tables", "collisions"]
+    },
+    {
+      "id": "fc-chaining-vs-open-addressing",
+      "lessonId": "hash-tables",
+      "front": "How do separate chaining and open addressing differ?",
+      "back": "Chaining stores colliding entries in a small list inside each bucket, while open addressing keeps all entries in the array itself and probes for another free slot on collision.",
+      "tags": ["hash-tables", "collisions"]
+    },
+    {
+      "id": "fc-load-factor",
+      "lessonId": "hash-tables",
+      "front": "What is the load factor of a hash table and why does it matter?",
+      "back": "The load factor is the number of entries divided by the number of buckets; when it gets too high, collisions increase and the table resizes and rehashes to stay fast.",
+      "tags": ["hash-tables", "load-factor"]
+    },
+    {
+      "id": "fc-hash-complexity",
+      "lessonId": "hash-tables",
+      "front": "What is the average time complexity of hash table operations, and what is the worst case?",
+      "back": "Insertion, lookup, and deletion take O(1) time on average with a good hash function, but they can degrade to O(n) if many keys collide into the same bucket.",
+      "tags": ["hash-tables", "complexity"]
+    },
+    {
+      "id": "fc-bubble-sort",
+      "lessonId": "sorting",
+      "front": "How does bubble sort work and what is its time complexity?",
+      "back": "It repeatedly swaps adjacent out-of-order elements so large values bubble to the end, taking O(n squared) time on average and in the worst case, and O(n) if already sorted.",
+      "tags": ["sorting", "bubble-sort"]
+    },
+    {
+      "id": "fc-insertion-sort-strength",
+      "lessonId": "sorting",
+      "front": "When is insertion sort a good choice despite being O(n squared) in the worst case?",
+      "back": "It excels on small arrays and nearly sorted data, where it runs in about O(n) time, which is why libraries use it for tiny subarrays.",
+      "tags": ["sorting", "insertion-sort"]
+    },
+    {
+      "id": "fc-merge-sort",
+      "lessonId": "sorting",
+      "front": "What are the key properties of merge sort?",
+      "back": "Merge sort is a stable divide and conquer algorithm that runs in O(n log n) time in every case, but it needs O(n) extra memory for merging.",
+      "tags": ["sorting", "merge-sort"]
+    },
+    {
+      "id": "fc-quicksort-cases",
+      "lessonId": "sorting",
+      "front": "What are quicksort's average and worst case running times?",
+      "back": "Quicksort averages O(n log n) and is usually the fastest comparison sort in practice, but poorly chosen pivots can degrade it to O(n squared) in the worst case.",
+      "tags": ["sorting", "quicksort"]
+    },
+    {
+      "id": "fc-stable-sort",
+      "lessonId": "sorting",
+      "front": "What does it mean for a sorting algorithm to be stable?",
+      "back": "A stable sort keeps elements with equal keys in their original relative order, which matters when sorting records by several criteria in sequence.",
+      "tags": ["sorting", "stability"]
+    },
+    {
+      "id": "fc-binary-search",
+      "lessonId": "trees-graphs",
+      "front": "How does binary search work and what does it require?",
+      "back": "It repeatedly compares the target with the middle element of a sorted array and discards half of the remaining range, so it requires sorted data and runs in O(log n) time.",
+      "tags": ["binary-search", "searching"]
+    },
+    {
+      "id": "fc-bst-property",
+      "lessonId": "trees-graphs",
+      "front": "What ordering rule defines a binary search tree?",
+      "back": "For every node, all keys in the left subtree are smaller than the node's key and all keys in the right subtree are larger, which enables O(log n) search in a balanced tree.",
+      "tags": ["trees", "bst"]
+    },
+    {
+      "id": "fc-inorder-traversal",
+      "lessonId": "trees-graphs",
+      "front": "What is special about an inorder traversal of a binary search tree?",
+      "back": "Inorder traversal visits the left subtree, the node, then the right subtree, so on a binary search tree it produces the keys in ascending sorted order.",
+      "tags": ["trees", "traversal"]
+    },
+    {
+      "id": "fc-directed-undirected",
+      "lessonId": "trees-graphs",
+      "front": "What is the difference between a directed and an undirected graph?",
+      "back": "In an undirected graph edges connect two vertices in both directions, while in a directed graph each edge points one way, like a one-way street.",
+      "tags": ["graphs", "definitions"]
+    },
+    {
+      "id": "fc-bfs-vs-dfs",
+      "lessonId": "trees-graphs",
+      "front": "When should you use breadth-first search instead of depth-first search?",
+      "back": "Use BFS when you need the shortest path by number of edges in an unweighted graph, since it explores level by level with a queue; DFS suits cycle detection, topological sorting, and deep exploration.",
+      "tags": ["graphs", "bfs", "dfs"]
+    }
+  ]
+}
